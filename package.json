@@ -1,0 +1,24 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "next build && CRITTERS_BUILD=1 node critters",
+    "dev": "next dev",
+    "start": "CRITTERS_RUNTIME=1 NODE_ENV=production node server"
+  },
+  "dependencies": {
+    "critters": "^0.0.22",
+    "next": "latest",
+    "node-html-parser": "^6.1.13",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@types/node": "20.12.8",
+    "@types/react": "18.3.1",
+    "copy-webpack-plugin": "^12.0.2",
+    "typescript": "5.4.5"
+  }
+}
