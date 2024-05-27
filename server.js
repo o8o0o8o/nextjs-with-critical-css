@@ -45,7 +45,7 @@ try {
 
 async function saveStylesToFile(html, path) {
   const folder = DIR + path;
-  const styles = await processHTMLFile(path, path, html, true);
+  const styles = await processHTMLFile(path, html, true);
 
   fs.mkdirSync(folder, { recursive: true });
 
