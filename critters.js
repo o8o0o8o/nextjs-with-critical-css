@@ -28,9 +28,10 @@ function getHTMLFiles(dir, files = []) {
 async function processHTMLFile(file, htmlString, skipSave) {
   try {
     const critters = new Critters();
+    // we don't read file at runtime
     const html = htmlString || (file && fs.readFileSync(file, "utf-8"));
 
-    // nextjs paths
+    // nextJS paths
     const pathPatterns = {
       real: "/.next/static/css",
       original: "/_next/static/css",
@@ -63,7 +64,7 @@ async function processHTMLFile(file, htmlString, skipSave) {
       }
     }
 
-    // we don't save file during runtime
+    // we don't save file at runtime
     if (!skipSave) {
       fs.writeFileSync(file, DOMAfterCritters.toString());
     }
