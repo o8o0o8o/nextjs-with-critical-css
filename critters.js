@@ -54,7 +54,24 @@ async function processHTMLFile(file, slug, htmlString, skipSave) {
       }
     }
 
-    if (!skipSave) {
+    // save HTML file in runtime, sutable only for ISR https://nextjs.org/docs/pages/building-your-application/data-fetching/incremental-static-regeneration
+    if (runtime) {
+      const filePath = join(
+        process.cwd(),
+        ".next",
+        "server",
+        "pages",
+        file + ".html"
+      );
+
+      fs.writeFile(filePath, DOMAfterCritters.toString(), (err) => {
+        if (err) {
+          console.error("Error saving HTML file:", err);
+        } else {
+          console.log("HTML save to file:", filePath);
+        }
+      });
+    } else {
       fs.writeFileSync(file, DOMAfterCritters.toString());
     }
 
