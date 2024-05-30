@@ -25,7 +25,7 @@ function getHTMLFiles(dir, files = []) {
   return files;
 }
 
-async function processHTMLFile(file, htmlString, skipSave) {
+async function processHTMLFile(file, htmlString, runtime) {
   try {
     const critters = new Critters();
     // we don't read file at runtime
@@ -64,8 +64,25 @@ async function processHTMLFile(file, htmlString, skipSave) {
       }
     }
 
-    // we don't save file at runtime
-    if (!skipSave) {
+    // save HTML file in runtime, only for ISR https://nextjs.org/docs/pages/building-your-application/data-fetching/incremental-static-regeneration
+    if (runtime === "ISR") {
+      const filePath = join(
+        process.cwd(),
+        ".next",
+        "server",
+        "pages",
+        file + ".html"
+      );
+
+      fs.writeFile(filePath, DOMAfterCritters.toString(), (err) => {
+        if (err) {
+          console.error("Error saving the HTML file:", err);
+        } else {
+          console.log("The HTML file has been saved: ", filePath);
+        }
+      });
+      // we don't save file in SSR
+    } else if (runtime !== "SSR") {
       fs.writeFileSync(file, DOMAfterCritters.toString());
     }
 
