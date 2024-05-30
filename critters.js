@@ -3,26 +3,35 @@ const { join } = require("path");
 const fs = require("fs");
 const { parse } = require("node-html-parser");
 
-function getFiles(dir, files = []) {
+// Recursive function to get files
+function getHTMLFiles(dir, files = []) {
+  // Get an array of all files and directories in the passed directory using fs.readdirSync
   const fileList = fs.readdirSync(dir);
-
+  // Create the full path of the file/directory by concatenating the passed directory and file/directory name
   for (const file of fileList) {
     const name = `${dir}/${file}`;
-
+    // Check if the current file/directory is a directory using fs.statSync
     if (fs.statSync(name).isDirectory()) {
-      getFiles(name, files);
+      // If it is a directory, recursively call the getFiles function with the directory path and the files array
+      getHTMLFiles(name, files);
     } else {
-      files.push(name);
+      // If it is an HTML file, push the full path to the files array
+      if (name.endsWith("html")) {
+        files.push(name);
+      }
     }
   }
+
   return files;
 }
 
-async function processHTMLFile(file, slug, htmlString, runtime) {
+async function processHTMLFile(file, htmlString, runtime) {
   try {
     const critters = new Critters();
+    // we don't read file at runtime
     const html = htmlString || (file && fs.readFileSync(file, "utf-8"));
 
+    // nextJS paths
     const pathPatterns = {
       real: "/.next/static/css",
       original: "/_next/static/css",
@@ -44,6 +53,7 @@ async function processHTMLFile(file, slug, htmlString, runtime) {
     const head = DOMAfterCritters.querySelector("head");
 
     if (head) {
+      // delete links in the <head/> that left after critters
       for (const linkInHead of head.querySelectorAll("link")) {
         if (
           linkInHead.attributes?.as === "style" ||
@@ -78,23 +88,22 @@ async function processHTMLFile(file, slug, htmlString, runtime) {
 
     const inlinedStyles = DOMAfterCritters.querySelector("style");
 
+    // return critical css
     return inlinedStyles.text;
   } catch (error) {}
 }
 
 async function main() {
   const currentFolder = join(process.cwd(), ".next");
-  const files = getFiles(currentFolder);
+  const files = getHTMLFiles(currentFolder);
   const processedRoutes = [];
 
   for (const file of files) {
-    if (file.endsWith(".html")) {
-      const slug = file.split(".next/server/pages")[1];
+    const slug = file.split(".next/server/pages")[1];
 
-      await processHTMLFile(file, slug);
+    await processHTMLFile(file);
 
-      processedRoutes.push(slug.replace(".html", "").replace("index", ""));
-    }
+    processedRoutes.push(slug.replace(".html", "").replace("index", ""));
   }
 
   fs.writeFileSync(
