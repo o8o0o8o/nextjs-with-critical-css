@@ -1,12 +1,12 @@
 {
   "private": true,
   "scripts": {
-    "build": "next build && CRITTERS_BUILD=1 node critters",
+    "build": "next build && BEASTIES_BUILD=1 node beasties",
     "dev": "next dev",
-    "start": "CRITTERS_RUNTIME=1 NODE_ENV=production node server"
+    "start": "BEASTIES_RUNTIME=1 NODE_ENV=production node server"
   },
   "dependencies": {
-    "critters": "^0.0.22",
+    "beasties": "^0.2.0",
     "next": "latest",
     "node-html-parser": "^6.1.13",
     "react": "18.2.0",
