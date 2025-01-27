@@ -28,7 +28,7 @@ function getCriticalCSS(page) {
       <style
         dangerouslySetInnerHTML={{
           __html: fs.readFileSync(
-            join(process.cwd(), "critters", withoutQuery, "styles.css"),
+            join(process.cwd(), "beasties", withoutQuery, "styles.css"),
             "utf-8"
           ),
         }}
@@ -41,7 +41,7 @@ function getCriticalCSS(page) {
 
 export default function Document(props) {
   const criticalCSS = getCriticalCSS(props.dangerousAsPath);
-  const isCriticalCSSMode = process.env.CRITTERS_RUNTIME && criticalCSS;
+  const isCriticalCSSMode = process.env.BEASTIES_RUNTIME && criticalCSS;
 
   return (
     <Html lang="en">
